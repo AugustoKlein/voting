@@ -40,7 +40,7 @@ public class PautaServiceImpl implements PautaService {
         Pauta pauta = pautaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (pauta.getStatus().equals(PautaStatusEnum.OPEN)) {
-            log.error("Pauta voting already opened");
+            log.error("Pauta voting is already opened");
             throw new OpenedPautaException();
         }
 

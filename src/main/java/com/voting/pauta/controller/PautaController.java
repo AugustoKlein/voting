@@ -30,7 +30,7 @@ public class PautaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PautaResponse> result(@PathVariable("id") Long id) {
+    public ResponseEntity<PautaResponse> find(@PathVariable("id") Long id) {
         return ResponseEntity.ok(PautaMapper.toResponse(pautaService.find(id)));
     }
 
