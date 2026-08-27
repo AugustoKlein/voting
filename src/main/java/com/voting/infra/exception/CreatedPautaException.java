@@ -3,8 +3,8 @@ package com.voting.infra.exception;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ExpiredPautaException extends RuntimeException {
-    public ExpiredPautaException(String message) {
+public class CreatedPautaException extends RuntimeException {
+    public CreatedPautaException(String message) {
         super(message);
     }
 }

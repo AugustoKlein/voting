@@ -6,11 +6,13 @@ import com.voting.voter.dto.VoterDto;
 import com.voting.voter.enums.VoterStatusEnum;
 import com.voting.voter.mapper.VoterMapper;
 import com.voting.voter.repository.VoterRepository;
-import com.voting.voter.repository.entity.Voter;
 import com.voting.voter.service.VoterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -21,10 +23,10 @@ public class VoterServiceImpl implements VoterService {
     private VoterRepository voterRepository;
 
     @Override
-    public Long create(VoterDto voterDto) {
+    public void create(VoterDto voterDto) {
         log.info("Create voter for pauta: pautaId - {}", voterDto.pautaId());
 
-        if (voterRepository.existsByIdAndPautaId(voterDto.id(), voterDto.pautaId())) {
+        if (voterRepository.existsByCpfAndPautaId(voterDto.cpf(), voterDto.pautaId())) {
             log.error("Unable to vote because he/she already voted");
             throw new MemberUnableToVoteException(VoterStatusEnum.ALREADY_VOTED.name());
         }
@@ -35,8 +37,15 @@ public class VoterServiceImpl implements VoterService {
             throw new MemberUnableToVoteException(VoterStatusEnum.UNABLE_TO_VOTE.name());
         }
 
-        Voter voter = voterRepository.save(VoterMapper.toVoter(voterDto));
-        return voter.getId();
+        voterRepository.save(VoterMapper.toVoter(voterDto));
+    }
+
+    @Override
+    public List<VoterDto> findAllByPautaId(Long id) {
+        log.info("Find all the voters by pautaId: {}", id);
+        return voterRepository.findAllByPautaId(id).stream()
+                .map(VoterMapper::toVoterDto)
+                .collect(Collectors.toList());
     }
 
 }

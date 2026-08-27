@@ -1,5 +1,6 @@
 package com.voting.voter.mapper;
 
+import com.voting.pauta.controller.request.PautaVoteRequest;
 import com.voting.voter.dto.VoterDto;
 import com.voting.voter.repository.entity.Voter;
 import lombok.AccessLevel;
@@ -21,6 +22,14 @@ public final class VoterMapper {
                 .id(voter.getId())
                 .cpf(voter.getCpf())
                 .votedYes(voter.getVotedYes())
+                .build();
+    }
+
+    public static VoterDto toVoterDto(Long pautaId, PautaVoteRequest voter) {
+        return VoterDto.builder()
+                .cpf(voter.getCpf())
+                .votedYes(voter.getVotedYes())
+                .pautaId(pautaId)
                 .build();
     }
 }

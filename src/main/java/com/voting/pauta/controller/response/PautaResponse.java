@@ -1,7 +1,6 @@
-package com.voting.pauta.repository.entity;
+package com.voting.pauta.controller.response;
 
 import com.voting.pauta.enums.PautaStatusEnum;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,32 +9,18 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Pauta {
+@NoArgsConstructor
+public class PautaResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String description;
-
-    @Enumerated(EnumType.STRING)
     private PautaStatusEnum status;
-
-    @Column(name = "ends_at")
     private LocalDateTime endsAt;
-
-    @Column(name = "total_vote_count")
     private Long totalVoteCount;
-
-    @Column(name = "yes_vote_count")
     private Long yesVoteCount;
-
-    @Column(name = "no_vote_count")
     private Long noVoteCount;
+
 }

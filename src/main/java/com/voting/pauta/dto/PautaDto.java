@@ -11,7 +11,10 @@ import java.util.List;
 public record PautaDto(Long id,
                        String name,
                        String description,
-                       List<VoterDto> memberList,
+                       List<VoterDto> voters,
                        PautaStatusEnum status,
-                       LocalDateTime expirationTime) {
+                       LocalDateTime endsAt,
+                       Long totalVoteCount,
+                       Long yesVoteCount,
+                       Long noVoteCount) {
 }

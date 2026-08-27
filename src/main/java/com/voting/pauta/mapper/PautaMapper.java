@@ -1,11 +1,10 @@
 package com.voting.pauta.mapper;
 
 import com.voting.pauta.controller.request.PautaRequest;
+import com.voting.pauta.controller.response.PautaResponse;
 import com.voting.pauta.dto.PautaDto;
 import com.voting.pauta.enums.PautaStatusEnum;
 import com.voting.pauta.repository.entity.Pauta;
-import com.voting.voter.dto.PautaVoterDto;
-import com.voting.voter.repository.entity.PautaVoterId;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,6 @@ public final class PautaMapper {
         return PautaDto.builder()
                 .name(pautaRequest.getName())
                 .description(pautaRequest.getDescription())
-                .expirationTime(pautaRequest.getExpirationTime())
                 .build();
     }
 
@@ -24,16 +22,40 @@ public final class PautaMapper {
         return Pauta.builder()
                 .name(pautaDto.name())
                 .description(pautaDto.description())
-                .statusEnum(pautaDto.status())
-                .expirationTime(pautaDto.expirationTime())
-                .statusEnum(PautaStatusEnum.IN_PROGRESS)
+                .status(pautaDto.status())
+                .endsAt(pautaDto.endsAt())
+                .status(PautaStatusEnum.CREATED)
+                .totalVoteCount(pautaDto.totalVoteCount())
+                .yesVoteCount(pautaDto.yesVoteCount())
+                .noVoteCount(pautaDto.noVoteCount())
                 .build();
     }
 
-    public static PautaVoterId toId(PautaVoterDto pautaVoterDto) {
-        return PautaVoterId.builder()
-                .pautaId(pautaVoterDto.pautaId())
-                .memberId(pautaVoterDto.memberId())
+    public static PautaResponse toResponse(PautaDto pautaDto) {
+        return PautaResponse.builder()
+                .id(pautaDto.id())
+                .name(pautaDto.name())
+                .description(pautaDto.description())
+                .status(pautaDto.status())
+                .endsAt(pautaDto.endsAt())
+                .status(pautaDto.status())
+                .totalVoteCount(pautaDto.totalVoteCount())
+                .yesVoteCount(pautaDto.yesVoteCount())
+                .noVoteCount(pautaDto.noVoteCount())
+                .build();
+    }
+
+    public static PautaDto toDto(Pauta pauta) {
+        return PautaDto.builder()
+                .id(pauta.getId())
+                .name(pauta.getName())
+                .description(pauta.getDescription())
+                .status(pauta.getStatus())
+                .endsAt(pauta.getEndsAt())
+                .status(pauta.getStatus())
+                .totalVoteCount(pauta.getTotalVoteCount())
+                .yesVoteCount(pauta.getYesVoteCount())
+                .noVoteCount(pauta.getNoVoteCount())
                 .build();
     }
 }

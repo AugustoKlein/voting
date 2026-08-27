@@ -6,10 +6,11 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PautaRequest {
-    @NonNull
-    private String name;
+public class PautaVoteRequest {
 
     @NonNull
-    private String description;
+    private String cpf;
+
+    @NonNull
+    private Boolean votedYes;
 }

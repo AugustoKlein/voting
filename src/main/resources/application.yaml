@@ -1,3 +1,20 @@
 spring:
   application:
     name: voting
+  datasource:
+    url: jdbc:mysql://mysql-db:3306/voting_db
+    username: root
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+    locations: classpath:db.migration
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  cpf:
+    url: https://document.api.fake.url/

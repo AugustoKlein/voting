@@ -5,7 +5,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: test
-      MYSQL_DATABASE: voting-db
+      MYSQL_DATABASE: voting_db
     volumes:
       - mysql-data:/var/lib/mysql
 
