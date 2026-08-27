@@ -8,7 +8,6 @@ import com.voting.pauta.enums.PautaStatusEnum;
 import com.voting.pauta.repository.PautaRepository;
 import com.voting.pauta.service.impl.PautaServiceImpl;
 import com.voting.pauta.stub.PautaStub;
-import com.voting.voter.dto.VoterDto;
 import com.voting.voter.service.VoterService;
 import com.voting.voter.stub.VoterStub;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,13 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@DisplayName("Account Service Test")
+@DisplayName("Pauta Service Test")
 @ExtendWith(MockitoExtension.class)
 class PautaServiceTest {
     public static final String DEFAULT_ERROR_MESSAGE = "something went wrong";
     private static final Long PAUTA_ID = 1L;
     private static final LocalDateTime END_AT = LocalDateTime.now().plusMinutes(10);
-    
+
     @InjectMocks
     private PautaServiceImpl pautaService;
 
@@ -92,7 +91,7 @@ class PautaServiceTest {
         public void openOpenedPautaException() {
             when(pautaRepository.findById(anyLong())).thenReturn(Optional.of(PautaStub.pauta(PautaStatusEnum.OPEN)));
 
-           assertThrows(OpenedPautaException.class, () -> pautaService.openById(PAUTA_ID, END_AT));
+            assertThrows(OpenedPautaException.class, () -> pautaService.openById(PAUTA_ID, END_AT));
 
             verify(pautaRepository).findById(anyLong());
             verify(pautaRepository, never()).save(any());
@@ -115,7 +114,7 @@ class PautaServiceTest {
             when(pautaRepository.findById(anyLong())).thenThrow(new IllegalArgumentException(DEFAULT_ERROR_MESSAGE));
 
             String message = assertThrows(IllegalArgumentException.class, () ->
-                            pautaService.openById(PAUTA_ID, END_AT)).getMessage();
+                    pautaService.openById(PAUTA_ID, END_AT)).getMessage();
 
             assertEquals(DEFAULT_ERROR_MESSAGE, message);
             verify(pautaRepository, never()).save(any());
