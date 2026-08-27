@@ -1,0 +1,302 @@
+openapi: 3.1.0
+info:
+  title: Votação API
+  description: Documentação completa da API de votação
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Pauta
+  description: APIs para a administração e votação de pautas
+paths:
+  /api/pauta/{id}/vote:
+    put:
+      tags:
+      - Pauta
+      summary: Vota em uma pauta
+      description: Registra um voto SIM ou NÃO para a pauta informada.
+      operationId: vote
+      parameters:
+      - name: id
+        in: path
+        description: Identificador da pauta
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      requestBody:
+        description: Dados do voto
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PautaVoteRequest"
+        required: true
+      responses:
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
+        "400":
+          description: Erro na requisição
+          content:
+            application/json:
+              example:
+                status: BAD_REQUEST
+        "404":
+          description: Pauta não encontrada
+          content:
+            application/json:
+              example:
+                status: NOT_FOUND
+        "200":
+          description: Voto registrado com sucesso
+  /api/pauta/{id}/open-session:
+    put:
+      tags:
+      - Pauta
+      summary: Abrir uma sessão de votação
+      description: Abre a sessão de votação da pauta e define a data e hora de encerramento.
+      operationId: openSession
+      parameters:
+      - name: id
+        in: path
+        description: Identificador da pauta
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      requestBody:
+        description: Configurações da sessão
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenPautaRequest"
+        required: true
+      responses:
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
+        "400":
+          description: Sessão da pauta já foi encerrada
+          content:
+            application/json:
+              example:
+                status: PAUTA_HAS_BEEN_CLOSED
+        "404":
+          description: Pauta não encontrada
+          content:
+            application/json:
+              example:
+                status: NOT_FOUND
+        "200":
+          description: Sessão de votação aberta com sucesso
+  /api/pauta/{id}/close-session:
+    put:
+      tags:
+      - Pauta
+      summary: Encerrar uma sessão de votação
+      description: Encerra a sessão de votação e retorna os dados finais da pauta.
+      operationId: closeSession
+      parameters:
+      - name: id
+        in: path
+        description: Identificador da pauta
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      responses:
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
+        "400":
+          description: Não é possível abrir a sessão pois a pauta ainda não está aberta
+          content:
+            application/json:
+              example:
+                status: PAUTA_IS_CREATED_BUT_NOT_OPENED
+        "404":
+          description: Pauta não encontrada
+          content:
+            application/json:
+              example:
+                status: NOT_FOUND
+        "200":
+          description: Sessão de votação encerrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PautaResponse"
+  /api/pauta:
+    post:
+      tags:
+      - Pauta
+      summary: Cria uma Pauta
+      description: Cria uma pauta com o status CREATED.
+      operationId: create
+      requestBody:
+        description: Dados da criação
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PautaRequest"
+        required: true
+      responses:
+        "500":
+          description: Falha Interna
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
+        "400":
+          description: Erro na requisição
+          content:
+            application/json:
+              example:
+                status: BAD_REQUEST
+        "404":
+          description: Pauta não encontrada
+          content:
+            application/json:
+              example:
+                status: NOT_FOUND
+        "201":
+          description: Pauta successfully created
+          headers:
+            Location:
+              description: URI da pauta criada
+              style: simple
+              schema:
+                example: /api/pauta/1
+  /api/pauta/{id}:
+    get:
+      tags:
+      - Pauta
+      summary: Busca uma pauta
+      description: Retorna uma pauta pelo seu id.
+      operationId: find
+      parameters:
+      - name: id
+        in: path
+        description: Identificador da pauta
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      responses:
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
+        "400":
+          description: Erro na requisição
+          content:
+            application/json:
+              example:
+                status: BAD_REQUEST
+        "404":
+          description: Pauta não encontrada
+          content:
+            application/json:
+              example:
+                status: NOT_FOUND
+        "200":
+          description: Pauta encontrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PautaResponse"
+components:
+  schemas:
+    PautaVoteRequest:
+      type: object
+      description: Dados necessários para registrar um voto
+      properties:
+        cpf:
+          type: string
+          description: CPF do eleitor
+          example: 12345678900
+        votedYes:
+          type: boolean
+          description: Indica se o voto é favorável à pauta
+          example: true
+    OpenPautaRequest:
+      type: object
+      description: Dados necessários para abertura da sessão de votação
+      properties:
+        endsAt:
+          type: string
+          format: date-time
+          description: Data e hora em que a sessão de votação será encerrada
+          example: 2026-08-27T18:30:00
+    PautaResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador da pauta
+          example: 1
+        name:
+          type: string
+          description: Nome da pauta
+          example: Implantação de home office
+        description:
+          type: string
+          description: Descrição da pauta
+          example: Permitir trabalho remoto três vezes por semana
+        status:
+          type: string
+          description: Status atual da pauta
+          enum:
+          - CREATED
+          - OPEN
+          - CLOSED
+          example: OPEN
+        endsAt:
+          type: string
+          format: date-time
+          description: Data e hora de encerramento da votação
+          example: 2026-08-27T18:30:00
+        totalVoteCount:
+          type: integer
+          format: int64
+          description: Quantidade total de votos
+          example: 10
+        yesVoteCount:
+          type: integer
+          format: int64
+          description: Quantidade de votos SIM
+          example: 7
+        noVoteCount:
+          type: integer
+          format: int64
+          description: Quantidade de votos NÃO
+          example: 3
+    PautaRequest:
+      type: object
+      description: Dados necessários para criação de uma pauta
+      properties:
+        name:
+          type: string
+          description: Nome da pauta
+          example: Implantação de home office
+        description:
+          type: string
+          description: Descrição da pauta
+          example: Permitir trabalho remoto três vezes por semana

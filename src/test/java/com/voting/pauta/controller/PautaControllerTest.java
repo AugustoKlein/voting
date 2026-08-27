@@ -42,11 +42,11 @@ class PautaControllerTest {
         public void createSuccess() throws Exception {
             when(pautaService.create(any())).thenReturn(1L);
 
-            mockMvc.perform(post("/pauta")
+            mockMvc.perform(post("/api/pauta")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(PautaStub.pautaRequest())))
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("Location", "/pauta/1"));
+                    .andExpect(header().string("Location", "/api/pauta/1"));
         }
 
         @Test
@@ -69,7 +69,7 @@ class PautaControllerTest {
         public void voteSuccess() throws Exception {
             doNothing().when(pautaService).vote(anyLong(), any(VoterDto.class));
 
-            mockMvc.perform(put("/pauta/{id}/vote", 1)
+            mockMvc.perform(put("/api/pauta/{id}/vote", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(PautaStub.pautaVoteRequest())))
                     .andExpect(status().isOk());
@@ -80,7 +80,7 @@ class PautaControllerTest {
         public void findFail() throws Exception {
             doThrow(new IllegalArgumentException()).when(pautaService).vote(anyLong(), any(VoterDto.class));
 
-            mockMvc.perform(put("/pauta/{id}/vote", 1)
+            mockMvc.perform(put("/api/pauta/{id}/vote", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(PautaStub.pautaVoteRequest())))
                     .andExpect(status().isInternalServerError());
@@ -94,7 +94,7 @@ class PautaControllerTest {
         public void openSuccess() throws Exception {
             doNothing().when(pautaService).openById(anyLong(), any(LocalDateTime.class));
 
-            mockMvc.perform(put("/pauta/{id}/open-session", 1)
+            mockMvc.perform(put("/api/pauta/{id}/open-session", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(PautaStub.openPautaRequest())))
                     .andExpect(status().isOk());
@@ -105,7 +105,7 @@ class PautaControllerTest {
         public void openFail() throws Exception {
             doThrow(new IllegalArgumentException()).when(pautaService).openById(anyLong(), any(LocalDateTime.class));
 
-            mockMvc.perform(put("/pauta/{id}/open-session", 1)
+            mockMvc.perform(put("/api/pauta/{id}/open-session", 1)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(PautaStub.openPautaRequest())))
                     .andExpect(status().isInternalServerError());
@@ -119,7 +119,7 @@ class PautaControllerTest {
         public void closeSuccess() throws Exception {
             when(pautaService.closeById(anyLong())).thenReturn(PautaStub.pautaDto());
 
-            mockMvc.perform(put("/pauta/{id}/close-session", 1)
+            mockMvc.perform(put("/api/pauta/{id}/close-session", 1)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         }
@@ -129,7 +129,7 @@ class PautaControllerTest {
         public void closeFail() throws Exception {
             doThrow(new IllegalArgumentException()).when(pautaService).closeById(anyLong());
 
-            mockMvc.perform(put("/pauta/{id}/close-session", 1)
+            mockMvc.perform(put("/api/pauta/{id}/close-session", 1)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError());
         }
@@ -142,7 +142,7 @@ class PautaControllerTest {
         public void findSuccess() throws Exception {
             when(pautaService.find(any())).thenReturn(PautaStub.pautaDto());
 
-            mockMvc.perform(get("/pauta/{id}", 1)
+            mockMvc.perform(get("/api/pauta/{id}", 1)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         }
@@ -152,7 +152,7 @@ class PautaControllerTest {
         public void findFail() throws Exception {
             when(pautaService.find(any())).thenThrow(new IllegalArgumentException());
 
-            mockMvc.perform(get("/pauta/{id}", 1)
+            mockMvc.perform(get("/api/pauta/{id}", 1)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError());
         }

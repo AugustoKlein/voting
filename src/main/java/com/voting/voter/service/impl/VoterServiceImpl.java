@@ -27,13 +27,13 @@ public class VoterServiceImpl implements VoterService {
         log.info("Create voter for pauta: pautaId - {}", voterDto.pautaId());
 
         if (voterRepository.existsByCpfAndPautaId(voterDto.cpf(), voterDto.pautaId())) {
-            log.error("Unable to vote because he/she already voted");
+            log.error("Unable to vote because the member already voted");
             throw new MemberUnableToVoteException(VoterStatusEnum.ALREADY_VOTED.name());
         }
 
         VoterStatusEnum status = documentValidationService.validateDocumentId(voterDto.cpf()).status();
         if (VoterStatusEnum.UNABLE_TO_VOTE.equals(status)) {
-            log.error("Unable to vote because he/she is not valid");
+            log.error("Unable to vote because the member is not valid");
             throw new MemberUnableToVoteException(VoterStatusEnum.UNABLE_TO_VOTE.name());
         }
 

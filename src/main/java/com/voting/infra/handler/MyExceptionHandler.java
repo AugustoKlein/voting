@@ -1,23 +1,20 @@
 package com.voting.infra.handler;
 
+import com.voting.infra.dto.ErrorDto;
 import com.voting.infra.dto.GenericErrorDto;
 import com.voting.infra.exception.ClosedPautaException;
-import com.voting.infra.dto.ErrorDto;
 import com.voting.infra.exception.CreatedPautaException;
 import com.voting.infra.exception.MemberUnableToVoteException;
 import com.voting.infra.exception.OpenedPautaException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -71,7 +68,7 @@ public class MyExceptionHandler {
                 .build();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public GenericErrorDto handleException(Exception ex) {
         return GenericErrorDto.builder()
