@@ -29,7 +29,7 @@ export const options = {
 export function setup() {
     // 1. Create pauta
     const createResponse = http.post(
-        `${BASE_URL}/api/pauta`,
+        `${BASE_URL}/api/v1/pauta`,
         JSON.stringify({
             name: 'Performance Test',
             description: 'Pauta criada automaticamente pelo teste de performance',
@@ -51,7 +51,7 @@ export function setup() {
         );
     }
 
-    // Location: /api/pauta/{id}
+    // Location: /api/v1/pauta/{id}
     const location = createResponse.headers['Location'];
     const pautaId = location.split('/').pop();
 
@@ -61,7 +61,7 @@ export function setup() {
     ).toISOString().slice(0, 19);
 
     const openResponse = http.put(
-        `${BASE_URL}/api/pauta/${pautaId}/open-session`,
+        `${BASE_URL}/api/v1/pauta/${pautaId}/open-session`,
         JSON.stringify({
             endsAt: endsAt,
         }),
@@ -89,7 +89,7 @@ export function setup() {
 
 export default function (data) {
     const response = http.put(
-        `${BASE_URL}/api/pauta/${data.pautaId}/vote`,
+        `${BASE_URL}/api/v1/pauta/${data.pautaId}/vote`,
         JSON.stringify({
             cpf: generateCpf(),
             votedYes: Math.random() >= 0.5,

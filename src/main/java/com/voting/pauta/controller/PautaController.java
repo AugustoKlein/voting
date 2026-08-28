@@ -28,7 +28,7 @@ import java.net.URI;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/pauta")
+@RequestMapping("/api/v1/pauta")
 @Tag(name = "Pauta", description = "APIs para a administração e votação de pautas")
 public class PautaController {
 
@@ -47,7 +47,7 @@ public class PautaController {
                             description = "URI da pauta criada",
                             schema = @Schema(
                                     type = "string",
-                                    example = "/api/pauta/1"
+                                    example = "/api/v1/pauta/1"
                             ))),
             @ApiResponse(
                     responseCode = "404",
@@ -98,7 +98,7 @@ public class PautaController {
                             )))
             @RequestBody PautaRequest pautaRequest) {
         Long id = pautaService.create(PautaMapper.toDto(pautaRequest));
-        return ResponseEntity.created(URI.create(String.format("/api/pauta/%s", id))).build();
+        return ResponseEntity.created(URI.create(String.format("/api/v1/pauta/%s", id))).build();
     }
 
 

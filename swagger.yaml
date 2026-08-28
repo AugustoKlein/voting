@@ -10,7 +10,7 @@ tags:
 - name: Pauta
   description: APIs para a administração e votação de pautas
 paths:
-  /api/pauta/{id}/vote:
+  /api/v1/pauta/{id}/vote:
     put:
       tags:
       - Pauta
@@ -47,14 +47,14 @@ paths:
               example:
                 status: BAD_REQUEST
         "404":
-          description: Pauta não encontrada
+          description: Não é possível votar porque o membro não é válido
           content:
             application/json:
               example:
-                status: NOT_FOUND
+                status: UNABLE_TO_VOTE
         "200":
           description: Voto registrado com sucesso
-  /api/pauta/{id}/open-session:
+  /api/v1/pauta/{id}/open-session:
     put:
       tags:
       - Pauta
@@ -98,7 +98,7 @@ paths:
                 status: NOT_FOUND
         "200":
           description: Sessão de votação aberta com sucesso
-  /api/pauta/{id}/close-session:
+  /api/v1/pauta/{id}/close-session:
     put:
       tags:
       - Pauta
@@ -139,7 +139,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PautaResponse"
-  /api/pauta:
+  /api/v1/pauta:
     post:
       tags:
       - Pauta
@@ -179,8 +179,8 @@ paths:
               description: URI da pauta criada
               style: simple
               schema:
-                example: /api/pauta/1
-  /api/pauta/{id}:
+                example: /api/v1/pauta/1
+  /api/v1/pauta/{id}:
     get:
       tags:
       - Pauta

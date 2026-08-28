@@ -24,7 +24,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/pauta",
+          "raw": "http://localhost:8080/api/v1/pauta",
           "protocol": "http",
           "host": [
             "localhost"
@@ -56,7 +56,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/pauta/:id/open-session",
+          "raw": "http://localhost:8080/api/v1/pauta/:id/open-session",
           "protocol": "http",
           "host": [
             "localhost"
@@ -96,7 +96,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/pauta/:id/vote",
+          "raw": "http://localhost:8080/api/v1/pauta/:id/vote",
           "protocol": "http",
           "host": [
             "localhost"
@@ -136,7 +136,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/pauta/:id/close-session",
+          "raw": "http://localhost:8080/api/v1/pauta/:id/close-session",
           "protocol": "http",
           "host": [
             "localhost"
@@ -179,7 +179,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/pauta/:id",
+          "raw": "http://localhost:8080/api/v1/pauta/:id",
           "protocol": "http",
           "host": [
             "localhost"
