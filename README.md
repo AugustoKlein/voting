@@ -1,28 +1,197 @@
-# simple-bank-transfer
+# Voting API
 
-### Como rodar o projeto
+API REST para gerenciamento de pautas e sessões de votação, desenvolvida com **Java 21** e **Spring Boot**.
 
-**Downloads:**
+O projeto permite criar pautas, abrir e encerrar sessões de votação e registrar votos, além de disponibilizar documentação através do **Swagger/OpenAPI**.
 
-1. [Docker](https://www.docker.com/products/docker-desktop/)
-2. [Java 21](https://adoptium.net/pt-BR/temurin/releases?version=21)
-3. **Clonar projeto**
+## Tecnologias
+
+- Java 21
+- Spring Boot
+- Gradle
+- MySQL 8
+- Flyway
+- Docker
+- Swagger / OpenAPI
+- JUnit 5
+- Mockito
+
+## Funcionalidades
+
+- Criação de pautas
+- Consulta de pautas
+- Abertura de sessões de votação
+- Registro de votos SIM/NÃO
+- Encerramento de sessões
+- Migração de banco de dados com Flyway
+- Encerramento automático de sessões
+- Documentação da API com Swagger/OpenAPI
+
+## Comentários
+
+- Para tratar de exceções de forma global utilizei a classe [MyExceptionHandler](https://github.com/AugustoKlein/voting/blob/fb040b99cde42c177120f1a2eebd42fa63bc7e2a/src/main/java/com/voting/infra/handler/MyExceptionHandler.java),
+onde são tratados os possíveis erros.
+- Para simular o cenário da Tarefa Bônus 1("Criar uma Facade/Client Fake que retorna aleátoriamente se um CPF recebido é válido ou não."), utilizei de mocks.
+Nesse [mock](https://github.com/AugustoKlein/voting/blob/0e63ca89caca0d0a6982dd85cb18692c7f944dfb/src/main/java/com/voting/client/service/service/impl/DocumentValidationClientServiceMock.java) uma randomização básica será feita, onde 50% das vezes o CPF retornara como válido. Também criei um [repositório fake](https://github.com/AugustoKlein/voting/blob/f0c0507041c85ccc476ae02f6ea85bf8106eb00d/src/main/java/com/voting/client/service/repository/DocumentValidationRepository.java) simulando como seria em um cenário real.
+
+## Fluxo da pauta
+
+Uma pauta possui os seguintes estados:
+
+```text
+CREATED → OPEN → CLOSED
+```
+
+- **CREATED** — pauta criada.
+- **OPEN** — votação aberta.
+- **CLOSED** — votação encerrada.
+
+## Scheduler
+
+O projeto possui um scheduler responsável por verificar periodicamente as pautas com status `OPEN`.
+
+A verificação é executada a cada **5 segundos**:
+
+```
+@Scheduled(fixedDelay = 5000)
+```
+
+O scheduler identifica as pautas cuja data de encerramento foi atingida e realiza o encerramento da sessão.
+
+## Banco de dados
+
+O projeto utiliza **MySQL 8** através do Docker Compose.
+
+O banco de dados utilizado é:
+
+```text
+voting_id
+```
+
+## Executando a aplicação
+
+### Pré-requisitos
+
+- Java 21
+- Docker
+- Docker Compose
+- Gradle
+
+### Iniciando o projeto
+
+Primeiro clone o projeto
 ```
 git clone https://github.com/AugustoKlein/voting
  ```
-4. IDEA: IntelliJ IDEA
 
-## Decisões de design e arquitetura adotadas
+Execute o projeto:
 
-Uma API simples de votação de assembleia.
+```bash
+./gradlew bootRun --args="--spring.profiles.active=local"
+```
 
-### Documentação Swagger
+Ao executar o projeto mesmo irá gerar Docker Container com MySQL, baseado no arquivo [compose.yaml](compose.yaml), caso haja problemas rode o comando:
 
-- Documento Swagger: [swagger.yaml](swagger.yaml)
+```bash
+docker compose up -d
+```
 
-### Banco de dados
+Depois execute a aplicação
 
-- Banco de dados: MySQL
-- Migration: Flyway
+A aplicação estará disponível em:
 
-### Explicação do ciclo
+```text
+http://localhost:8080
+```
+
+As migrations são executadas automaticamente pelo **Flyway** durante a inicialização da aplicação.
+
+## Endpoints
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `POST` | `/api/pauta` | Cria uma nova pauta |
+| `GET` | `/api/pauta/{id}` | Busca uma pauta pelo ID |
+| `PUT` | `/api/pauta/{id}/open-session` | Abre a sessão de votação |
+| `PUT` | `/api/pauta/{id}/vote` | Registra um voto na pauta |
+| `PUT` | `/api/pauta/{id}/close-session` | Encerra a sessão de votação |
+
+
+## Testes
+
+Os testes utilizam:
+
+- JUnit 5
+- Mockito
+
+Para executar:
+
+```bash
+./gradlew test
+```
+
+## Flyway
+
+O versionamento do banco de dados é realizado utilizando **Flyway**.
+
+As migrations estão localizadas em:
+
+```text
+src/main/resources/db/migration
+```
+
+## Performance
+
+Para testes de performance utilizei o K6/grafana, onde testei apenas a funcionalidade de votar, tentando replicar um 
+cenário real de múltiplos votantes, os testes avaliados foram:
+
+- tempo de resposta;
+- throughput;
+- taxa de erros;
+- comportamento sob concorrência;
+- consumo de recursos;
+- consistência dos votos sob alta concorrência.
+
+No último teste esse foi o resultado:
+```text
+Requests:
+  Total: 24368
+
+Throughput:
+  Requests/s: 405.86
+
+Tempo de resposta:
+  Média: 108.34 ms
+  Mediana: 83.19 ms
+  P90: 248.98 ms
+  P95: 277.28 ms
+  P99: 0.00 ms
+  Máximo: 566.18 ms
+
+Erros:
+  Taxa de erro: 51.52%
+```
+Vale notar que a taxa de erros está coerente com a lógica do serviço, pois utilizei da **Tarefa Bônus 1 - Integração com sistemas externos**,
+onde era descrito que um CPF aleatório retornaria válido ou não.
+
+Para executar o teste é preciso:
+1. Baixar o grafana/k6 do dockerHub
+```
+docker pull grafana/k6
+```
+2. Rodar o container
+```
+docker run --rm -v "${PWD}\performance:/scripts" grafana/k6 run /scripts/voting.js
+```
+
+## Documentação
+
+A documentação da API é gerada automaticamente utilizando **Springdoc OpenAPI**.
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+
+- OpenAPI: http://localhost:8080/v3/api-docs
+
+- Postman Collection: [Collection](voting-collection)
+
+## 

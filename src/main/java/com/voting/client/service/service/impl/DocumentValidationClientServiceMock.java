@@ -15,7 +15,7 @@ public class DocumentValidationClientServiceMock implements DocumentValidationCl
     @Override
     public DocumentValidationResponse validateDocumentId(String cpf) {
         int number = new Random().nextInt(100);
-        VoterStatusEnum status = number > 50 ? VoterStatusEnum.ABLE_TO_VOTE : VoterStatusEnum.UNABLE_TO_VOTE;
+        VoterStatusEnum status = number >= 50 ? VoterStatusEnum.ABLE_TO_VOTE : VoterStatusEnum.UNABLE_TO_VOTE;
         return DocumentValidationResponse.builder()
                 .status(status)
                 .build();

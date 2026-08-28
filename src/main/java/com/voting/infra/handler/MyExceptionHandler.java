@@ -36,7 +36,7 @@ public class MyExceptionHandler {
                 .build();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(MemberUnableToVoteException.class)
     public ErrorDto handleMemberUnableToVoteException(MemberUnableToVoteException exception) {
         return ErrorDto.builder()

@@ -222,7 +222,7 @@ public class PautaController {
                                             """
                             ))),
             @ApiResponse(
-                    responseCode = "400",
+                    responseCode = "404",
                     description = "Não é possível votar porque o membro já votou",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -234,7 +234,7 @@ public class PautaController {
                                             """
                             ))),
             @ApiResponse(
-                    responseCode = "400",
+                    responseCode = "404",
                     description = "Não é possível votar porque o membro não é válido",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
