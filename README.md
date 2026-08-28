@@ -54,6 +54,30 @@ CREATED → OPEN → CLOSED
 - **OPEN** — votação aberta.
 - **CLOSED** — votação encerrada.
 
+## Fluxo das requisições
+```text
+                  POST /pauta
+                       │
+                       ▼
+                    CREATED
+                   /       \
+                  /         \
+         GET /pauta/{id}   PUT /open-session
+                            │
+                            ▼
+                          OPEN
+                       /    |    \
+                      /     |     \
+                     /      |      \
+             GET /pauta   PUT /vote   PUT /close-session
+                                      │
+                                      ▼
+                                   CLOSED
+                                      │
+                                      ▼
+                              GET /pauta/{id}
+```
+
 ## Scheduler
 
 O projeto possui um scheduler responsável por verificar periodicamente as pautas com status `OPEN`.
