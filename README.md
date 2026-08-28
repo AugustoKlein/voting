@@ -31,7 +31,7 @@ O projeto permite criar pautas, abrir e encerrar sessões de votação e registr
 
 - Para tratar de exceções de forma global utilizei a classe [MyExceptionHandler](https://github.com/AugustoKlein/voting/blob/fb040b99cde42c177120f1a2eebd42fa63bc7e2a/src/main/java/com/voting/infra/handler/MyExceptionHandler.java),
 onde são tratados os possíveis erros.
-- Para simular o cenário da Tarefa Bônus 1("Criar uma Facade/Client Fake que retorna aleátoriamente se um CPF recebido é válido ou não."), utilizei de mocks.
+- Para simular o cenário da **Tarefa Bônus 1("Criar uma Facade/Client Fake que retorna aleátoriamente se um CPF recebido é válido ou não.")**, utilizei de mocks.
 Nesse [mock](https://github.com/AugustoKlein/voting/blob/0e63ca89caca0d0a6982dd85cb18692c7f944dfb/src/main/java/com/voting/client/service/service/impl/DocumentValidationClientServiceMock.java) uma randomização básica será feita, onde 50% das vezes o CPF retornara como válido. Também criei um [repositório fake](https://github.com/AugustoKlein/voting/blob/f0c0507041c85ccc476ae02f6ea85bf8106eb00d/src/main/java/com/voting/client/service/repository/DocumentValidationRepository.java) simulando como seria em um cenário real.
 
 ## Versionamento
@@ -184,7 +184,7 @@ cenário real de múltiplos votantes, os testes avaliados foram:
 - consumo de recursos;
 - consistência dos votos sob alta concorrência.
 
-No último teste esse foi o resultado:
+No último teste executado, esse foi o resultado:
 ```text
 Requests:
   Total: 24368
