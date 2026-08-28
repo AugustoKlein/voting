@@ -1,6 +1,7 @@
 package com.voting.pauta.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Builder
@@ -14,13 +15,13 @@ public class PautaRequest {
             description = "Nome da pauta",
             example = "Implantação de home office"
     )
-    @NonNull
+    @NotNull
     private String name;
 
     @Schema(
             description = "Descrição da pauta",
             example = "Permitir trabalho remoto três vezes por semana"
     )
-    @NonNull
+    @NotNull
     private String description;
 }

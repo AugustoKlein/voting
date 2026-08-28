@@ -63,13 +63,14 @@ public class PautaController {
                             ))),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Erro na requisição",
+                    description = "Campo não pode ser nulo",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     value = """
                                             {
-                                              "status": "BAD_REQUEST"
+                                                "status": "BAD_REQUEST",
+                                                "message": "{campo}: não deve ser nulo"
                                             }
                                             """
                             ))),
@@ -96,7 +97,7 @@ public class PautaController {
                             schema = @Schema(
                                     implementation = PautaRequest.class
                             )))
-            @RequestBody PautaRequest pautaRequest) {
+            @Valid @RequestBody PautaRequest pautaRequest) {
         Long id = pautaService.create(PautaMapper.toDto(pautaRequest));
         return ResponseEntity.created(URI.create(String.format("/api/v1/pauta/%s", id))).build();
     }
@@ -174,89 +175,76 @@ public class PautaController {
                     description = "Voto registrado com sucesso"
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Requisição de voto inválida",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "INVALID_REQUEST"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
                     responseCode = "404",
-                    description = "Pauta não encontrada",
+                    description = "Pauta não encontrada ou votante inválido",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "NOT_FOUND"
-                                            }
-                                            """
-                            ))),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "NOT_FOUND"
+                                                    }
+                                                    """,
+                                            name = "Not found"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "ALREADY_VOTED"
+                                                    }
+                                                    """,
+                                            name = "Não é possível votar porque o membro já votou"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "UNABLE_TO_VOTE"
+                                                    }
+                                                    """,
+                                            name = "Não é possível votar porque o membro não é válido"
+                                    )
+                            })),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Não é possível votar pois a votação ainda não está aberta",
+                    description = "Erro de requisição",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
+                            examples = {@ExampleObject(
                                     value = """
                                             {
                                               "status": "PAUTA_IS_CREATED_BUT_NOT_OPENED"
                                             }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Não é possível votar pois a votação da pauta foi encerrada",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "PAUTA_HAS_BEEN_CLOSED"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Não é possível votar porque o membro já votou",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "ALREADY_VOTED"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Não é possível votar porque o membro não é válido",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "UNABLE_TO_VOTE"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Erro na requisição",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "BAD_REQUEST"
-                                            }
-                                            """
-                            ))),
+                                            """,
+                                    name = "Pauta foi criada mas não aberta"
+                            ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "PAUTA_HAS_BEEN_CLOSED"
+                                                    }
+                                                    """,
+                                            name = "Pauta já foi fechada"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "status": "BAD_REQUEST",
+                                                        "message": "cpf: número do registro de contribuinte individual brasileiro (CPF) inválido"
+                                                    }
+                                                    """,
+                                            name = "Formato de CPF ínvalido"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "status": "BAD_REQUEST",
+                                                        "message": "{campo}: não deve ser nulo"
+                                                    }
+                                                    """,
+                                            name = "Campo não pode ser nulo"
+                                    )
+                            })),
             @ApiResponse(
                     responseCode = "500",
                     description = "Erro interno do servidor",
@@ -288,7 +276,7 @@ public class PautaController {
                             schema = @Schema(
                                     implementation = PautaVoteRequest.class
                             )))
-            @RequestBody PautaVoteRequest pautaVoteRequest) {
+            @Valid @RequestBody PautaVoteRequest pautaVoteRequest) {
         pautaService.vote(id, VoterMapper.toVoterDto(id, pautaVoteRequest));
         return ResponseEntity.ok().build();
     }
@@ -304,52 +292,53 @@ public class PautaController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Requisição inválida",
+                    description = "Erro de requisição",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "INVALID_REQUEST"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Sessão já esta aberta",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "PAUTA_IS_ALREADY_OPENED"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Erro na requisição",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "BAD_REQUEST"
-                                            }
-                                            """
-                            ))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Sessão da pauta já foi encerrada",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "status": "PAUTA_HAS_BEEN_CLOSED"
-                                            }
-                                            """
-                            ))),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "BAD_REQUEST"
+                                                    }
+                                                    """,
+                                            name = "Bad Request"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "status": "BAD_REQUEST",
+                                                        "message": "endsAt: A pauta só pode ser aberta no futuro"
+                                                    }
+                                                    """,
+                                            name = "A pauta só pode ser aberta no futuro"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "status": "BAD_REQUEST",
+                                                        "message": "{campo}: não deve ser nulo"
+                                                    }
+                                                    """,
+                                            name = "Campo não pode ser nulo"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "PAUTA_HAS_BEEN_CLOSED"
+                                                    }
+                                                    """,
+                                            name = "Pauta já foi fechada"
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "status": "PAUTA_IS_ALREADY_OPENED"
+                                                    }
+                                                    """,
+                                            name = "Sessão já esta aberta"
+                                    )
+                            })),
             @ApiResponse(
                     responseCode = "404",
                     description = "Pauta não encontrada",

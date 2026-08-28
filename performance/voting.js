@@ -107,11 +107,39 @@ export default function (data) {
 }
 
 function generateCpf() {
-    const random = Math.floor(Math.random() * 100000000000)
-        .toString()
-        .padStart(11, '0');
+       const digits = [];
 
-    return random;
+        for (let i = 0; i < 9; i++) {
+            digits.push(Math.floor(Math.random() * 10));
+        }
+
+        if (digits.every(digit => digit === digits[0])) {
+            digits[8] = (digits[8] + 1) % 10;
+        }
+
+        let sum = 0;
+
+        for (let i = 0; i < 9; i++) {
+            sum += digits[i] * (10 - i);
+        }
+
+        let remainder = sum % 11;
+        const firstDigit = remainder < 2 ? 0 : 11 - remainder;
+
+        digits.push(firstDigit);
+
+        sum = 0;
+
+        for (let i = 0; i < 10; i++) {
+            sum += digits[i] * (11 - i);
+        }
+
+        remainder = sum % 11;
+        const secondDigit = remainder < 2 ? 0 : 11 - remainder;
+
+        digits.push(secondDigit);
+
+        return digits.join('');
 }
 
 /**

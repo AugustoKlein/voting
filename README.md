@@ -15,6 +15,8 @@ O projeto permite criar pautas, abrir e encerrar sessões de votação e registr
 - Swagger / OpenAPI
 - JUnit 5
 - Mockito
+- Jakarta
+- Lombok
 
 ## Funcionalidades
 
@@ -33,6 +35,7 @@ O projeto permite criar pautas, abrir e encerrar sessões de votação e registr
 onde são tratados os possíveis erros.
 - Para simular o cenário da **Tarefa Bônus 1("Criar uma Facade/Client Fake que retorna aleátoriamente se um CPF recebido é válido ou não.")**, utilizei de mocks.
 Nesse [mock](https://github.com/AugustoKlein/voting/blob/0e63ca89caca0d0a6982dd85cb18692c7f944dfb/src/main/java/com/voting/client/service/service/impl/DocumentValidationClientServiceMock.java) uma randomização básica será feita, onde 50% das vezes o CPF retornara como válido. Também criei um [repositório fake](https://github.com/AugustoKlein/voting/blob/f0c0507041c85ccc476ae02f6ea85bf8106eb00d/src/main/java/com/voting/client/service/repository/DocumentValidationRepository.java) simulando como seria em um cenário real.
+- Para gerar CPF válidos utilizei do site [4Devs](https://www.4devs.com.br/gerador_de_cpf).
 
 ## Versionamento
 Para o versionamento utilizei o padrão "/api/v1/..." na URL, pela simplicidade da aplicação acredito que foi a melhor
@@ -187,21 +190,21 @@ cenário real de múltiplos votantes, os testes avaliados foram:
 No último teste executado, esse foi o resultado:
 ```text
 Requests:
-  Total: 24368
+  Total: 24313
 
 Throughput:
-  Requests/s: 405.86
+  Requests/s: 404.93
 
 Tempo de resposta:
-  Média: 108.34 ms
-  Mediana: 83.19 ms
-  P90: 248.98 ms
-  P95: 277.28 ms
+  Média: 108.57 ms
+  Mediana: 84.44 ms
+  P90: 247.32 ms
+  P95: 272.43 ms
   P99: 0.00 ms
-  Máximo: 566.18 ms
+  Máximo: 558.99 ms
 
 Erros:
-  Taxa de erro: 51.52%
+  Taxa de erro: 49.86%
 ```
 Vale notar que a taxa de erros está coerente com a lógica do serviço, pois utilizei da **Tarefa Bônus 1 - Integração com sistemas externos**,
 onde era descrito que um CPF aleatório retornaria válido ou não.
@@ -229,4 +232,4 @@ A documentação da API é gerada automaticamente utilizando **Springdoc OpenAPI
 
 - Postman Collection: [Collection](https://github.com/AugustoKlein/voting/blob/819bb9adcb15ee4e9aa4e9e4bd29d036b4b90eb4/Voting%20API.postman_collection.json)
 
-## 
+- Teste de perfomance com o K6: [voting.js](https://github.com/AugustoKlein/voting/blob/c5bf9496e7764c3756c026698e36ee213ab0feed/performance/voting.js)

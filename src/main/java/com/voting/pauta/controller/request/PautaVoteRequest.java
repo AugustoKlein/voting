@@ -1,7 +1,9 @@
 package com.voting.pauta.controller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Builder
 @Data
@@ -12,15 +14,16 @@ public class PautaVoteRequest {
 
     @Schema(
             description = "CPF do eleitor",
-            example = "12345678900"
+            example = "54261727064"
     )
-    @NonNull
+    @NotNull
+    @CPF
     private String cpf;
 
     @Schema(
             description = "Indica se o voto é favorável à pauta",
             example = "true"
     )
-    @NonNull
+    @NotNull
     private Boolean votedYes;
 }

@@ -10,7 +10,7 @@ public final class VoterStub {
     public static Voter voter() {
         return Voter.builder()
                 .id(1L)
-                .cpf("123456789")
+                .cpf("54261727064")
                 .votedYes(true)
                 .pautaId(1L)
                 .build();
@@ -19,7 +19,7 @@ public final class VoterStub {
     public static VoterDto voterDto() {
         return VoterDto.builder()
                 .id(1L)
-                .cpf("123456789")
+                .cpf("54261727064")
                 .votedYes(true)
                 .pautaId(1L)
                 .build();

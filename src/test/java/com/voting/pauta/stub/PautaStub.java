@@ -69,7 +69,7 @@ public final class PautaStub {
 
     public static PautaVoteRequest pautaVoteRequest() {
         return PautaVoteRequest.builder()
-                .cpf("123456789")
+                .cpf("54261727064")
                 .votedYes(true)
                 .build();
     }

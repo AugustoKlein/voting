@@ -34,24 +34,53 @@ paths:
               $ref: "#/components/schemas/PautaVoteRequest"
         required: true
       responses:
+        "400":
+          description: Erro de requisição
+          content:
+            application/json:
+              examples:
+                Pauta foi criada mas não aberta:
+                  description: Pauta foi criada mas não aberta
+                  value:
+                    status: PAUTA_IS_CREATED_BUT_NOT_OPENED
+                Pauta já foi fechada:
+                  description: Pauta já foi fechada
+                  value:
+                    status: PAUTA_HAS_BEEN_CLOSED
+                Formato de CPF ínvalido:
+                  description: Formato de CPF ínvalido
+                  value:
+                    status: BAD_REQUEST
+                    message: "cpf: número do registro de contribuinte individual brasileiro\
+                      \ (CPF) inválido"
+                Campo não pode ser nulo:
+                  description: Campo não pode ser nulo
+                  value:
+                    status: BAD_REQUEST
+                    message: "{campo}: não deve ser nulo"
         "500":
           description: Erro interno do servidor
           content:
             application/json:
               example:
                 status: INTERNAL_ERROR
-        "400":
-          description: Erro na requisição
-          content:
-            application/json:
-              example:
-                status: BAD_REQUEST
         "404":
-          description: Não é possível votar porque o membro não é válido
+          description: Pauta não encontrada ou votante inválido
           content:
             application/json:
-              example:
-                status: UNABLE_TO_VOTE
+              examples:
+                Not found:
+                  description: Not found
+                  value:
+                    status: NOT_FOUND
+                Não é possível votar porque o membro já votou:
+                  description: Não é possível votar porque o membro já votou
+                  value:
+                    status: ALREADY_VOTED
+                Não é possível votar porque o membro não é válido:
+                  description: Não é possível votar porque o membro não é válido
+                  value:
+                    status: UNABLE_TO_VOTE
         "200":
           description: Voto registrado com sucesso
   /api/v1/pauta/{id}/open-session:
@@ -78,18 +107,39 @@ paths:
               $ref: "#/components/schemas/OpenPautaRequest"
         required: true
       responses:
+        "400":
+          description: Erro de requisição
+          content:
+            application/json:
+              examples:
+                Bad Request:
+                  description: Bad Request
+                  value:
+                    status: BAD_REQUEST
+                A pauta só pode ser aberta no futuro:
+                  description: A pauta só pode ser aberta no futuro
+                  value:
+                    status: BAD_REQUEST
+                    message: "endsAt: A pauta só pode ser aberta no futuro"
+                Campo não pode ser nulo:
+                  description: Campo não pode ser nulo
+                  value:
+                    status: BAD_REQUEST
+                    message: "{campo}: não deve ser nulo"
+                Pauta já foi fechada:
+                  description: Pauta já foi fechada
+                  value:
+                    status: PAUTA_HAS_BEEN_CLOSED
+                Sessão já esta aberta:
+                  description: Sessão já esta aberta
+                  value:
+                    status: PAUTA_IS_ALREADY_OPENED
         "500":
           description: Erro interno do servidor
           content:
             application/json:
               example:
                 status: INTERNAL_ERROR
-        "400":
-          description: Sessão da pauta já foi encerrada
-          content:
-            application/json:
-              example:
-                status: PAUTA_HAS_BEEN_CLOSED
         "404":
           description: Pauta não encontrada
           content:
@@ -115,18 +165,18 @@ paths:
           format: int64
         example: 1
       responses:
-        "500":
-          description: Erro interno do servidor
-          content:
-            application/json:
-              example:
-                status: INTERNAL_ERROR
         "400":
           description: Não é possível abrir a sessão pois a pauta ainda não está aberta
           content:
             application/json:
               example:
                 status: PAUTA_IS_CREATED_BUT_NOT_OPENED
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
         "404":
           description: Pauta não encontrada
           content:
@@ -154,18 +204,19 @@ paths:
               $ref: "#/components/schemas/PautaRequest"
         required: true
       responses:
+        "400":
+          description: Campo não pode ser nulo
+          content:
+            application/json:
+              example:
+                status: BAD_REQUEST
+                message: "{campo}: não deve ser nulo"
         "500":
           description: Falha Interna
           content:
             application/json:
               example:
                 status: INTERNAL_ERROR
-        "400":
-          description: Erro na requisição
-          content:
-            application/json:
-              example:
-                status: BAD_REQUEST
         "404":
           description: Pauta não encontrada
           content:
@@ -197,18 +248,18 @@ paths:
           format: int64
         example: 1
       responses:
-        "500":
-          description: Erro interno do servidor
-          content:
-            application/json:
-              example:
-                status: INTERNAL_ERROR
         "400":
           description: Erro na requisição
           content:
             application/json:
               example:
                 status: BAD_REQUEST
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                status: INTERNAL_ERROR
         "404":
           description: Pauta não encontrada
           content:
@@ -230,11 +281,14 @@ components:
         cpf:
           type: string
           description: CPF do eleitor
-          example: 12345678900
+          example: 54261727064
         votedYes:
           type: boolean
           description: Indica se o voto é favorável à pauta
           example: true
+      required:
+      - cpf
+      - votedYes
     OpenPautaRequest:
       type: object
       description: Dados necessários para abertura da sessão de votação
@@ -300,3 +354,6 @@ components:
           type: string
           description: Descrição da pauta
           example: Permitir trabalho remoto três vezes por semana
+      required:
+      - description
+      - name

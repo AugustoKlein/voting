@@ -19,6 +19,6 @@ public class OpenPautaRequest {
             type = "string",
             format = "date-time"
     )
-    @FutureOrPresent(message = "Cannot be open in the past")
+    @FutureOrPresent(message = "A pauta só pode ser aberta no futuro")
     private LocalDateTime endsAt;
 }

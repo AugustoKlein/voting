@@ -88,7 +88,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"cpf\": \"12345678\",\r\n    \"votedYes\": true\r\n}",
+          "raw": "{\r\n    \"cpf\": \"54261727064\",\r\n    \"votedYes\": true\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -159,7 +159,7 @@
       "response": []
     },
     {
-      "name": "Resulto da Pauta",
+      "name": "Resultado da Pauta",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
